@@ -1,4 +1,4 @@
-module github.com/SYSU-ECNC/sso-system/backend
+module github.com/SYSU-ECNC/schedule-manager/backend
 
 go 1.22.2
 
