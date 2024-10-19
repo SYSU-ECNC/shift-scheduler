@@ -4,8 +4,8 @@ import (
 	"log/slog"
 	"net/http"
 
-	"github.com/SYSU-ECNC/schedule-manager/backend/internal/config"
-	"github.com/SYSU-ECNC/schedule-manager/backend/internal/repository"
+	"github.com/SYSU-ECNC/shift-scheduler/backend/internal/config"
+	"github.com/SYSU-ECNC/shift-scheduler/backend/internal/repository"
 )
 
 type Controller struct {

@@ -8,9 +8,9 @@ import (
 	"os"
 	"time"
 
-	"github.com/SYSU-ECNC/schedule-manager/backend/internal/config"
-	"github.com/SYSU-ECNC/schedule-manager/backend/internal/controller"
-	"github.com/SYSU-ECNC/schedule-manager/backend/internal/repository"
+	"github.com/SYSU-ECNC/shift-scheduler/backend/internal/config"
+	"github.com/SYSU-ECNC/shift-scheduler/backend/internal/controller"
+	"github.com/SYSU-ECNC/shift-scheduler/backend/internal/repository"
 
 	_ "github.com/jackc/pgx/v5/stdlib"
 )
