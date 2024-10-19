@@ -5,7 +5,7 @@ services:
     environment:
       POSTGRES_PASSWORD: password
       POSTGRES_USER: postgres
-      POSTGRES_DB: ecnc_sso_db
+      POSTGRES_DB: shift_scheduler_db
     volumes:
       - pgdata:/var/lib/postgresql/data
     ports:
