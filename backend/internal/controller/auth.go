@@ -79,3 +79,16 @@ func (ctrl *Controller) login(w http.ResponseWriter, r *http.Request) {
 
 	ctrl.ok(w, "登录成功", nil)
 }
+
+func (ctrl *Controller) logout(w http.ResponseWriter, r *http.Request) {
+	cookie := http.Cookie{
+		Name:     "__shift_scheduler_jwt",
+		Value:    "",
+		Path:     "/",
+		Expires:  time.Now().Add(-1 * time.Hour),
+		HttpOnly: true,
+	}
+	http.SetCookie(w, &cookie)
+
+	ctrl.ok(w, "登出成功", nil)
+}

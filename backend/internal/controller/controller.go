@@ -23,6 +23,7 @@ func NewController(cfg *config.Config, logger *slog.Logger, repo *repository.Rep
 func (ctrl *Controller) SetupRoutes() {
 	authMux := http.NewServeMux()
 	authMux.HandleFunc("POST /login", ctrl.login)
+	authMux.HandleFunc("POST /logout", ctrl.logout)
 
 	v1Mux := http.NewServeMux()
 	v1Mux.Handle("/auth/", http.StripPrefix("/auth", authMux))
