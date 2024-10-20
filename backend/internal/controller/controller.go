@@ -21,5 +21,14 @@ func NewController(cfg *config.Config, logger *slog.Logger, repo *repository.Rep
 }
 
 func (ctrl *Controller) SetupRoutes() {
-	ctrl.Handler = http.NewServeMux()
+	authMux := http.NewServeMux()
+	authMux.HandleFunc("POST /login", ctrl.login)
+
+	v1Mux := http.NewServeMux()
+	v1Mux.Handle("/auth/", http.StripPrefix("/auth", authMux))
+
+	mainMux := http.NewServeMux()
+	mainMux.Handle("/api/v1/", http.StripPrefix("/api/v1", v1Mux))
+
+	ctrl.Handler = mainMux
 }
