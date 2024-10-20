@@ -48,7 +48,7 @@ func main() {
 		ErrorLog:     slog.NewLogLogger(logger.Handler(), slog.LevelError),
 	}
 
-	logger.Info("the server is listening", "PORT", "8000")
+	logger.Info("the server is listening", "port", "8000")
 	if err := srv.ListenAndServe(); err != nil {
 		logger.Error("failed to start the server", "error", err)
 	}
