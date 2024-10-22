@@ -23,6 +23,7 @@ func NewController(cfg *config.Config, logger *slog.Logger, repo *repository.Rep
 func (ctrl *Controller) SetupRoutes() {
 	meMux := http.NewServeMux()
 	meMux.HandleFunc("GET /info", ctrl.getRequesterInfo)
+	meMux.HandleFunc("PATCH /info/password", ctrl.changeRequesterPassword)
 
 	privateMux := http.NewServeMux()
 	privateMux.Handle("/me/", http.StripPrefix("/me", ctrl.getRequester(meMux)))
