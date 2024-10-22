@@ -1,5 +1,9 @@
 DATABASE_URL ?= postgresql://postgres:password@localhost:5432/shift_scheduler_db?sslmode=disable
 
+.PHONY: run
+run:
+	@go run ./cmd/api/main.go
+
 .PHONY: new_migration
 new_migration:
 	@migrate create -ext sql -dir migrations -seq $(filter-out $@,$(MAKECMDGOALS))
