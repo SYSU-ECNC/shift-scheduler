@@ -25,7 +25,11 @@ const formSchema = z.object({
 });
 
 const LoginForm = () => {
-  const { register, handleSubmit } = useForm<z.infer<typeof formSchema>>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
 
@@ -52,6 +56,9 @@ const LoginForm = () => {
                 id="username"
                 placeholder="请输入 NetID"
               />
+              {errors.username && (
+                <p className="text-destructive">{errors.username.message}</p>
+              )}
             </div>
             <div className="grid gap-1.5">
               <Label htmlFor="password">密码</Label>
@@ -61,6 +68,9 @@ const LoginForm = () => {
                 id="password"
                 placeholder="请输入密码"
               />
+              {errors.password && (
+                <p className="text-destructive">{errors.password.message}</p>
+              )}
             </div>
           </div>
         </form>
