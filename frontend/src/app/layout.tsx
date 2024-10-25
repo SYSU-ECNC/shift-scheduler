@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import "./globals.css";
 import React, { ReactNode } from "react";
 import localFont from "next/font/local";
-import AppProvider from "./app-provider";
 
 const LXGWWenKai = localFont({
   src: [
@@ -35,9 +34,7 @@ interface RootLayoutProps {
 const RootLayout = ({ children }: RootLayoutProps) => {
   return (
     <html lang="zh-CN">
-      <body className={`${LXGWWenKai.className} antialiased`}>
-        <AppProvider>{children}</AppProvider>
-      </body>
+      <body className={`${LXGWWenKai.className} antialiased`}>{children}</body>
     </html>
   );
 };
