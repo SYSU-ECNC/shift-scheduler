@@ -64,3 +64,34 @@
     @apply bg-background text-foreground;
   }
 }
+
+@font-face {
+  font-family: "LXGW Wenkai";
+  src: url("/fonts/LXGWWenkai/LXGWWenkai-Light.ttf") format("truetype");
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "LXGW Wenkai";
+  src: url("/fonts/LXGWWenkai/LXGWWenkai-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "LXGW Wenkai";
+  src: url("/fonts/LXGWWenkai/LXGWWenkai-Medium.ttf") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  font-family: "LXGW Wenkai", sans-serif;
+}
