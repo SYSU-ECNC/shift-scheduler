@@ -9,30 +9,26 @@ import {
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { z } from "zod";
+
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-
-const formSchema = z.object({
-  username: z.string().min(1, {
-    message: "请输入用户名",
-  }),
-  password: z.string().min(1, {
-    message: "请输入密码",
-  }),
-});
+import { loginFormSchema } from "@/lib/form-schemas";
+import { z } from "zod";
+import { useLogin } from "@/lib/react-query/mutations";
 
 export default function LoginForm() {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  } = useForm<z.infer<typeof loginFormSchema>>({
+    resolver: zodResolver(loginFormSchema),
   });
 
-  const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = (data) => {
-    console.log(data);
+  const loginMutation = useLogin();
+
+  const onSubmit: SubmitHandler<z.infer<typeof loginFormSchema>> = (data) => {
+    loginMutation.mutate(data);
   };
 
   return (
