@@ -1,4 +1,4 @@
-import { useMe } from "@/lib/react-query/queries";
+import { useMe } from "@/hooks/react-query/queries";
 import { ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 

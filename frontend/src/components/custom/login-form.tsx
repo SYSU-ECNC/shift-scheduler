@@ -13,7 +13,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginFormSchema } from "@/lib/form-schemas";
 import { z } from "zod";
-import { useLogin } from "@/lib/react-query/mutations";
+import { useLogin } from "@/hooks/react-query/mutations";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import { AxiosError, AxiosResponse } from "axios";
 import { ApiResponse } from "@/lib/api";
