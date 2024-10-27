@@ -39,5 +39,5 @@ func (ctrl *Controller) SetupRoutes() {
 	mainMux := http.NewServeMux()
 	mainMux.Handle("/api/v1/", http.StripPrefix("/api/v1", v1Mux))
 
-	ctrl.Handler = mainMux
+	ctrl.Handler = ctrl.corsMiddleware(mainMux)
 }
