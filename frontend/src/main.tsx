@@ -6,13 +6,20 @@ import LoginPage from "./pages/auth/login/login-page";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Toaster } from "./components/ui/sonner";
+import Root from "./pages/root";
 
 const queryClient = new QueryClient();
 
 const router = createBrowserRouter([
   {
-    path: "/auth/login",
-    element: <LoginPage />,
+    path: "/",
+    element: <Root />,
+    children: [
+      {
+        path: "auth/login",
+        element: <LoginPage />,
+      },
+    ],
   },
 ]);
 
