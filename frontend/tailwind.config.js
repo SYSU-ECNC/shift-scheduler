@@ -3,6 +3,9 @@ export default {
   darkMode: ["class"],
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
+    fontFamily: {
+      display: ["LXGW WenKai", "sans-serif"],
+    },
     extend: {
       borderRadius: {
         lg: "var(--radius)",
