@@ -18,6 +18,7 @@ import { ReloadIcon } from "@radix-ui/react-icons";
 import { AxiosError, AxiosResponse } from "axios";
 import { ApiResponse } from "@/lib/api";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 export default function LoginForm() {
   const {
@@ -29,8 +30,10 @@ export default function LoginForm() {
   } = useForm<z.infer<typeof loginFormSchema>>({
     resolver: zodResolver(loginFormSchema),
   });
+  const navigate = useNavigate();
 
   const onSuccess = ({ data: { message } }: AxiosResponse<ApiResponse>) => {
+    navigate("/dashboard", { replace: true });
     toast(message);
   };
 

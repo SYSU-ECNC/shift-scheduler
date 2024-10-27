@@ -8,18 +8,45 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Toaster } from "./components/ui/sonner";
 import Root from "./pages/root";
 import ErrorPage from "./pages/error-page";
+import DashboardLayout from "./pages/dashboard/dashboard-layout";
+import OverviewPage from "./pages/dashboard/overview-page";
+import PrivateGuard from "./components/auth/private-guard";
+import PublicGuard from "./components/auth/public-guard";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: Infinity,
+      retry: false,
+    },
+  },
+});
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Root />,
     errorElement: <ErrorPage />,
+  },
+  {
+    path: "/auth/login",
+    element: (
+      <PublicGuard>
+        <LoginPage />
+      </PublicGuard>
+    ),
+  },
+  {
+    path: "/dashboard",
+    element: (
+      <PrivateGuard>
+        <DashboardLayout />
+      </PrivateGuard>
+    ),
     children: [
       {
-        path: "auth/login",
-        element: <LoginPage />,
+        index: true,
+        element: <OverviewPage />,
       },
     ],
   },
