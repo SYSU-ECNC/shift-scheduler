@@ -1,7 +1,7 @@
 export type Me = {
   id: string;
   username: string;
-  full_name: string;
+  fullName: string;
   role: string;
-  created_at: string;
+  createdAt: string;
 };
