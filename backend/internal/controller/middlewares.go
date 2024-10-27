@@ -3,7 +3,9 @@ package controller
 import (
 	"context"
 	"errors"
+	"log/slog"
 	"net/http"
+	"time"
 
 	"github.com/SYSU-ECNC/shift-scheduler/backend/internal/domain"
 	"github.com/SYSU-ECNC/shift-scheduler/backend/internal/repository"
@@ -85,5 +87,33 @@ func (ctrl *Controller) corsMiddleware(next http.Handler) http.Handler {
 		}
 
 		next.ServeHTTP(w, r)
+	})
+}
+
+type responseWriter struct {
+	http.ResponseWriter
+	statusCode int
+}
+
+func (rw *responseWriter) WriteHeader(code int) {
+	rw.statusCode = code
+	rw.ResponseWriter.WriteHeader(code)
+}
+
+func (ctrl *Controller) loggingMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		start := time.Now()
+
+		rw := &responseWriter{w, http.StatusOK}
+		next.ServeHTTP(rw, r)
+
+		duration := time.Since(start)
+
+		ctrl.logger.Info("HTTP request",
+			slog.String("method", r.Method),
+			slog.String("path", r.URL.Path),
+			slog.Int("status", rw.statusCode),
+			slog.Duration("duration", duration),
+		)
 	})
 }
