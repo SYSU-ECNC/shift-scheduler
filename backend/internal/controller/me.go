@@ -2,8 +2,9 @@ package controller
 
 import (
 	"errors"
-	"github.com/SYSU-ECNC/shift-scheduler/backend/internal/repository"
 	"net/http"
+
+	"github.com/SYSU-ECNC/shift-scheduler/backend/internal/repository"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -15,7 +16,7 @@ func (ctrl *Controller) getRequesterInfo(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	ctrl.ok(w, "获取个人信息成功", requester)
+	ctrl.writeJSON(w, http.StatusOK, requester)
 }
 
 func (ctrl *Controller) changeRequesterPassword(w http.ResponseWriter, r *http.Request) {
@@ -72,5 +73,5 @@ func (ctrl *Controller) changeRequesterPassword(w http.ResponseWriter, r *http.R
 		return
 	}
 
-	ctrl.writeSuccessJSON(w, http.StatusOK, "修改密码成功", nil)
+	ctrl.writeJSON(w, http.StatusOK, nil)
 }

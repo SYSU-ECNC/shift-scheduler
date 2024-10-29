@@ -47,18 +47,3 @@ func (ctrl *Controller) notFound(w http.ResponseWriter, err error) {
 func (ctrl *Controller) unauthorized(w http.ResponseWriter, err error) {
 	ctrl.writeErrorJSON(w, http.StatusUnauthorized, err)
 }
-
-func (ctrl *Controller) writeSuccessJSON(w http.ResponseWriter, status int, msg string, v any) {
-	type envelop struct {
-		Message string `json:"message"`
-		Data    any    `json:"data,omitempty"`
-	}
-	ctrl.writeJSON(w, status, envelop{
-		Message: msg,
-		Data:    v,
-	})
-}
-
-func (ctrl *Controller) ok(w http.ResponseWriter, msg string, v any) {
-	ctrl.writeSuccessJSON(w, http.StatusOK, msg, v)
-}

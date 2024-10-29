@@ -77,7 +77,7 @@ func (ctrl *Controller) login(w http.ResponseWriter, r *http.Request) {
 	}
 	http.SetCookie(w, cookie)
 
-	ctrl.ok(w, "登录成功", nil)
+	ctrl.writeJSON(w, http.StatusNoContent, nil)
 }
 
 func (ctrl *Controller) logout(w http.ResponseWriter, r *http.Request) {
@@ -90,5 +90,5 @@ func (ctrl *Controller) logout(w http.ResponseWriter, r *http.Request) {
 	}
 	http.SetCookie(w, &cookie)
 
-	ctrl.ok(w, "登出成功", nil)
+	ctrl.writeJSON(w, http.StatusNoContent, nil)
 }
