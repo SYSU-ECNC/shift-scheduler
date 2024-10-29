@@ -4,7 +4,6 @@ import {
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
@@ -30,7 +29,7 @@ import {
   KeyRound,
   LogOut,
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const navMain = [
   {
@@ -51,13 +50,13 @@ const navSecondary = [
 export default function AppSidebar() {
   const data: Me | undefined = queryClient.getQueryData(["me"]);
 
-  console.log("data:", data);
-
   const { username, fullName, role } = data || {
     username: "",
     fullName: "",
     role: "",
   };
+
+  const { pathname } = useLocation();
 
   return (
     <Sidebar>
@@ -69,9 +68,9 @@ export default function AppSidebar() {
                 <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
                   <Command className="size-4" />
                 </div>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">ECNC</span>
-                  <span className="truncate text-xs">排班系统</span>
+                <div className="grid">
+                  <span className="font-semibold">ECNC</span>
+                  <span className="text-xs">排班系统</span>
                 </div>
               </Link>
             </SidebarMenuButton>
@@ -85,7 +84,7 @@ export default function AppSidebar() {
             <SidebarMenu>
               {navMain.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton asChild isActive={pathname === item.url}>
                     <Link to={item.url}>
                       <item.icon />
                       <span>{item.title}</span>
@@ -101,7 +100,7 @@ export default function AppSidebar() {
             <SidebarMenu>
               {navSecondary.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild size="sm">
+                  <SidebarMenuButton asChild>
                     <Link to={item.url}>
                       <item.icon />
                       <span>{item.title}</span>
@@ -126,9 +125,9 @@ export default function AppSidebar() {
                     <AvatarImage src="/avatar.jpg" />
                     <AvatarFallback className="rounded-lg">CN</AvatarFallback>
                   </Avatar>
-                  <div className="grid flex-1 text-left text-sm leading-tight">
-                    <span className="truncate font-semibold">{fullName}</span>
-                    <span className="truncate text-xs">
+                  <div className="grid">
+                    <span className="font-semibold">{fullName}</span>
+                    <span className="text-xs">
                       {username}({role})
                     </span>
                   </div>
@@ -136,26 +135,11 @@ export default function AppSidebar() {
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
               <DropdownMenuContent
-                className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
+                className="w-[--radix-dropdown-menu-trigger-width] rounded-lg"
                 side="right"
                 align="end"
                 sideOffset={4}
               >
-                <DropdownMenuLabel className="p-0 font-normal">
-                  <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                    <Avatar className="h-8 w-8 rounded-lg">
-                      <AvatarImage src="/avatar.jpg" />
-                      <AvatarFallback className="rounded-lg">CN</AvatarFallback>
-                    </Avatar>
-                    <div className="grid flex-1 text-left text-sm leading-tight">
-                      <span className="truncate font-semibold">{fullName}</span>
-                      <span className="truncate text-xs">
-                        {username}({role})
-                      </span>
-                    </div>
-                  </div>
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator />
                 <DropdownMenuGroup>
                   <DropdownMenuItem>
                     <KeyRound />
