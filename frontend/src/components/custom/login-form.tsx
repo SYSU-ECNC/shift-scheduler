@@ -1,24 +1,24 @@
 import { Button } from "@/components/ui/button";
 import {
   Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
-  CardDescription,
-  CardContent,
-  CardFooter,
 } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { Label } from "@/components/ui/label";
+import { login } from "@/lib/api";
 import { loginFormSchema } from "@/lib/form-schemas";
-import { z } from "zod";
-import { useLogin } from "@/hooks/react-query/mutations";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { ReloadIcon } from "@radix-ui/react-icons";
-import { AxiosError, AxiosResponse } from "axios";
-import { ApiResponse } from "@/lib/api";
-import { toast } from "sonner";
+import { useMutation } from "@tanstack/react-query";
+import { AxiosError } from "axios";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import { z } from "zod";
 
 export default function LoginForm() {
   const {
@@ -32,22 +32,24 @@ export default function LoginForm() {
   });
   const navigate = useNavigate();
 
-  const onSuccess = ({ data: { message } }: AxiosResponse<ApiResponse>) => {
-    navigate("/dashboard", { replace: true });
-    toast(message);
-  };
-
-  const onError = (error: AxiosError) => {
-    if (error.message === "用户名不存在") {
-      setError("username", { message: error.message });
-      setFocus("username");
-    } else if (error.message === "密码错误") {
-      setError("password", { message: error.message });
-      setFocus("password");
-    }
-  };
-
-  const loginMutation = useLogin(onSuccess, onError);
+  const loginMutation = useMutation({
+    mutationFn: login,
+    onSuccess: () => {
+      navigate("/dashboard", { replace: true });
+      toast("登录成功");
+    },
+    onError: (error) => {
+      if (error instanceof AxiosError) {
+        if (error.message === "用户名不存在") {
+          setError("username", { message: error.message });
+          setFocus("username");
+        } else if (error.message === "密码错误") {
+          setError("password", { message: error.message });
+          setFocus("password");
+        }
+      }
+    },
+  });
 
   const onSubmit: SubmitHandler<z.infer<typeof loginFormSchema>> = (data) => {
     loginMutation.mutate(data);

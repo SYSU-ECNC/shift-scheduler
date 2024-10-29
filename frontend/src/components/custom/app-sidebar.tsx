@@ -20,7 +20,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { useMe } from "@/hooks/react-query/queries";
+import { Me } from "@/lib/types";
+import { queryClient } from "@/main";
 import {
   ChevronsUpDown,
   Command,
@@ -48,15 +49,15 @@ const navSecondary = [
 ];
 
 export default function AppSidebar() {
-  const meQuery = useMe();
+  const data: Me | undefined = queryClient.getQueryData(["me"]);
 
-  if (meQuery.isFetching || meQuery.isError) {
-    return null;
-  }
+  console.log("data:", data);
 
-  const username = meQuery.data?.data.data?.username || "";
-  const fullName = meQuery.data?.data.data?.fullName || "";
-  const role = meQuery.data?.data.data?.role || "";
+  const { username, fullName, role } = data || {
+    username: "",
+    fullName: "",
+    role: "",
+  };
 
   return (
     <Sidebar>

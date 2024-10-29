@@ -10,10 +10,10 @@ import Root from "./pages/root";
 import ErrorPage from "./pages/error-page";
 import DashboardLayout from "./pages/dashboard/dashboard-layout";
 import OverviewPage from "./pages/dashboard/overview-page";
-import PrivateGuard from "./components/auth/private-guard";
 import PublicGuard from "./components/auth/public-guard";
+import PrivateGuard from "./components/auth/private-guard";
 
-const queryClient = new QueryClient({
+export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: Infinity,

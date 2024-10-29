@@ -1,25 +1,17 @@
-import { useMe } from "@/hooks/react-query/queries";
+import { getMe } from "@/lib/api";
+import { useQuery } from "@tanstack/react-query";
 import { ReactNode } from "react";
-import { useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
-interface PublicGuardProps {
-  children: ReactNode;
-}
+export default function PublicGuard({ children }: { children: ReactNode }) {
+  const { isFetching, isError } = useQuery({
+    queryKey: ["me"],
+    queryFn: getMe,
+  });
 
-export default function PublicGuard({ children }: PublicGuardProps) {
-  const meQuery = useMe();
-  const navigate = useNavigate();
-
-  if (meQuery.isFetching) {
+  if (isFetching) {
     return null;
   }
 
-  if (meQuery.isSuccess) {
-    navigate("/dashboard", { replace: true });
-    return null;
-  }
-
-  if (meQuery.isError) {
-    return children;
-  }
+  return isError ? children : <Navigate to="/auth/login" replace />;
 }
