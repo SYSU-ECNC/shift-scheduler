@@ -16,9 +16,11 @@ func (ctrl *Controller) readJSON(r *http.Request, v any) error {
 func (ctrl *Controller) writeJSON(w http.ResponseWriter, status int, v any) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(status)
+	if status == http.StatusNoContent {
+		return
+	}
 	if err := json.NewEncoder(w).Encode(v); err != nil {
 		ctrl.logger.Error("internal server error", "error", err.Error())
-		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 	}
 }
 
