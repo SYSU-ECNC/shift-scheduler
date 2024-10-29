@@ -30,6 +30,10 @@ export async function login(data: z.infer<typeof loginFormSchema>) {
   return await axiosInstance.post("/auth/login", data);
 }
 
+export async function logout() {
+  return await axiosInstance.post("/auth/logout", null);
+}
+
 export async function getMe() {
   return await axiosInstance.get<Me>("/private/me/info");
 }
