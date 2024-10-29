@@ -13,5 +13,5 @@ export default function PublicGuard({ children }: { children: ReactNode }) {
     return null;
   }
 
-  return isError ? children : <Navigate to="/auth/login" replace />;
+  return isError ? children : <Navigate to="/dashboard" replace />;
 }
