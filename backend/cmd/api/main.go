@@ -30,7 +30,7 @@ func main() {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	if err := db.PingContext(ctx); err != nil {
-		logger.Error("cannot Ping database", "error", err)
+		logger.Error("cannot ping database", "error", err)
 		os.Exit(1)
 	}
 	defer cancel()
