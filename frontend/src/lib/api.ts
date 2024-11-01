@@ -1,39 +1,32 @@
-import { loginFormSchema } from "@/lib/form-schemas";
-import { Me } from "@/lib/types";
+import { User } from "@/types/types";
 import axios, { AxiosError } from "axios";
-import { z } from "zod";
 
-const axiosInstance = axios.create({
-  baseURL: `${import.meta.env.VITE_API_URL}/api/v1`,
-  withCredentials: true,
+const api = axios.create({
+  baseURL: import.meta.env.VITE_API_URL,
+  withCredentials: import.meta.env.DEV,
 });
 
-export interface errorResponse {
-  error: string;
-}
-
-axiosInstance.interceptors.response.use(
-  (response) => {
-    return response.data;
-  },
+api.interceptors.response.use(
+  (response) => response,
   (error) => {
     if (error instanceof AxiosError) {
-      if (error.response?.data.error) {
-        error.message = error.response?.data.error;
+      if (error.response && error.response.data && error.response.data.error) {
+        error.message = error.response.data.error;
       }
     }
+
     return Promise.reject(error);
   }
 );
 
-export async function login(data: z.infer<typeof loginFormSchema>) {
-  return await axiosInstance.post("/auth/login", data);
-}
+export const login = (data: { username: string; password: string }) =>
+  api.post("/api/v1/auth/login", data);
 
-export async function logout() {
-  return await axiosInstance.post("/auth/logout", null);
-}
+export const logout = () => api.post("/api/v1/auth/logout");
 
-export async function getMe() {
-  return await axiosInstance.get<Me>("/private/me/info");
-}
+export const getMe = () => api.get<User>("/api/v1/me").then((res) => res.data);
+
+export const updatePassword = (data: {
+  oldPassword: string;
+  newPassword: string;
+}) => api.patch("/api/v1/me/password", data);

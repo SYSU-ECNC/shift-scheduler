@@ -1,4 +1,10 @@
-export default function OverviewPage() {
+import { createFileRoute } from "@tanstack/react-router";
+
+export const Route = createFileRoute("/_authenticated/dashboard/_layout/")({
+  component: () => <DashboardOverview />,
+});
+
+export default function DashboardOverview() {
   return (
     <div className="w-full h-full flex flex-col items-center justify-center">
       <span className="font-semibold">主页</span>

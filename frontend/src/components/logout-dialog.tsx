@@ -9,10 +9,9 @@ import {
   AlertDialogAction,
 } from "@/components/ui/alert-dialog";
 import { logout } from "@/lib/api";
-import { queryClient } from "@/main";
 import { ReloadIcon } from "@radix-ui/react-icons";
-import { useMutation } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 
 interface LogoutDialogProps {
@@ -25,12 +24,13 @@ export default function LogoutDialog({
   onOpenChange,
 }: LogoutDialogProps) {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const { mutate: logoutMutate, isPending } = useMutation({
     mutationFn: logout,
     onSuccess: () => {
       queryClient.clear();
-      navigate("/auth/login", { replace: true });
+      navigate({ to: "/auth/login", replace: true });
       toast("登出成功");
     },
     onError: (error) => {
