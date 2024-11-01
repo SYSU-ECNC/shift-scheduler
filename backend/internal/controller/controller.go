@@ -1,11 +1,16 @@
 package controller
 
 import (
+	"errors"
 	"log/slog"
 	"net/http"
+	"time"
 
 	"github.com/SYSU-ECNC/shift-scheduler/backend/internal/config"
 	"github.com/SYSU-ECNC/shift-scheduler/backend/internal/repository"
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
+	"github.com/go-chi/cors"
 )
 
 type Controller struct {
@@ -21,23 +26,48 @@ func NewController(cfg *config.Config, logger *slog.Logger, repo *repository.Rep
 }
 
 func (ctrl *Controller) SetupRoutes() {
-	meMux := http.NewServeMux()
-	meMux.HandleFunc("GET /info", ctrl.getRequesterInfo)
-	meMux.HandleFunc("PATCH /info/password", ctrl.changeRequesterPassword)
+	r := chi.NewRouter()
+	r.Use(middleware.RequestID)
+	r.Use(middleware.RealIP)
+	r.Use(middleware.Logger)
+	r.Use(middleware.Recoverer)
+	r.Use(middleware.Timeout(60 * time.Second))
 
-	privateMux := http.NewServeMux()
-	privateMux.Handle("/me/", http.StripPrefix("/me", ctrl.getRequester(meMux)))
+	var allowedOrigins []string
+	if ctrl.cfg.Environment == "development" {
+		allowedOrigins = []string{"http://localhost:5173"}
+	} else {
+		allowedOrigins = []string{}
+	}
 
-	authMux := http.NewServeMux()
-	authMux.HandleFunc("POST /login", ctrl.login)
-	authMux.HandleFunc("POST /logout", ctrl.logout)
+	r.Use(cors.Handler(cors.Options{
+		AllowCredentials: true,
+		AllowedHeaders:   []string{"Content-Type"},
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"},
+		AllowedOrigins:   allowedOrigins,
+	}))
 
-	v1Mux := http.NewServeMux()
-	v1Mux.Handle("/auth/", http.StripPrefix("/auth", authMux))
-	v1Mux.Handle("/private/", http.StripPrefix("/private", ctrl.getSubAndRoleFromJWT(privateMux)))
+	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
+		ctrl.writeErrorJSON(w, http.StatusNotFound, errors.New("路由不存在"))
+	})
+	r.MethodNotAllowed(func(w http.ResponseWriter, r *http.Request) {
+		ctrl.writeErrorJSON(w, http.StatusMethodNotAllowed, errors.New("非法的请求方法"))
+	})
 
-	mainMux := http.NewServeMux()
-	mainMux.Handle("/api/v1/", http.StripPrefix("/api/v1", v1Mux))
+	r.Route("/api/v1", func(r chi.Router) {
+		r.Route("/auth", func(r chi.Router) {
+			r.Post("/login", ctrl.login)
+			r.Post("/logout", ctrl.logout)
+		})
+		r.Group(func(r chi.Router) {
+			r.Use(ctrl.getSubAndRoleFromJWT)
+			r.Route("/me", func(r chi.Router) {
+				r.Use(ctrl.getRequester)
+				r.Get("/", ctrl.getRequesterInfo)
+				r.Patch("/password", ctrl.changeRequesterPassword)
+			})
+		})
+	})
 
-	ctrl.Handler = ctrl.corsMiddleware(ctrl.loggingMiddleware(mainMux))
+	ctrl.Handler = r
 }

@@ -27,8 +27,8 @@ func (ctrl *Controller) changeRequesterPassword(w http.ResponseWriter, r *http.R
 	}
 
 	type request struct {
-		OldPassword string `json:"old_password"`
-		NewPassword string `json:"new_password"`
+		OldPassword string `json:"oldPassword"`
+		NewPassword string `json:"newPassword"`
 	}
 
 	req := new(request)
@@ -73,5 +73,5 @@ func (ctrl *Controller) changeRequesterPassword(w http.ResponseWriter, r *http.R
 		return
 	}
 
-	ctrl.writeJSON(w, http.StatusOK, nil)
+	ctrl.writeJSON(w, http.StatusNoContent, nil)
 }
