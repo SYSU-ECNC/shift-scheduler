@@ -6,6 +6,7 @@ import (
 	"errors"
 
 	"github.com/SYSU-ECNC/shift-scheduler/backend/internal/domain"
+	"github.com/google/uuid"
 )
 
 func (repo *Repository) GetUserByUsername(ctx context.Context, username string) (*domain.User, error) {
@@ -87,6 +88,33 @@ func (repo *Repository) GetAllUserID(ctx context.Context) ([]string, error) {
 	}
 
 	return ids, nil
+}
+
+func (repo *Repository) GetUserByID(ctx context.Context, id uuid.UUID) (*domain.User, error) {
+	user := new(domain.User)
+	user.ID = id
+
+	query := `
+		SELECT username, full_name, role, created_at
+		FROM users
+		WHERE id = $1
+	`
+
+	if err := repo.db.QueryRowContext(ctx, query, user.ID).Scan(
+		&user.Username,
+		&user.FullName,
+		&user.Role,
+		&user.CreatedAt,
+	); err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, ErrRecordNotFound
+		default:
+			return nil, err
+		}
+	}
+
+	return user, nil
 }
 
 func (repo *Repository) CreateUser(ctx context.Context, user *domain.User) error {

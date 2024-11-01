@@ -71,6 +71,7 @@ func (ctrl *Controller) SetupRoutes() {
 				r.Use(ctrl.checkAdmin)
 				r.Route("/users", func(r chi.Router) {
 					r.Get("/ids", ctrl.getAllUserID)
+					r.Get("/{ID}", ctrl.getUserByID)
 				})
 			})
 		})
