@@ -63,12 +63,13 @@ func (repo *Repository) UpdateUser(ctx context.Context, user *domain.User) error
 	return nil
 }
 
-func (repo *Repository) GetAllUserID(ctx context.Context) ([]string, error) {
+func (repo *Repository) GetAllUsers(ctx context.Context) ([]*domain.User, error) {
 	query := `
-		SELECT id FROM users
+		SELECT id, username, full_name, role, created_at 
+		FROM users
 	`
 
-	ids := make([]string, 0)
+	users := make([]*domain.User, 0)
 	rows, err := repo.db.QueryContext(ctx, query)
 	if err != nil {
 		return nil, err
@@ -76,18 +77,18 @@ func (repo *Repository) GetAllUserID(ctx context.Context) ([]string, error) {
 	defer rows.Close()
 
 	for rows.Next() {
-		var id string
-		if err := rows.Scan(&id); err != nil {
+		user := new(domain.User)
+		if err := rows.Scan(&user.ID, &user.Username, &user.FullName, &user.Role, &user.CreatedAt); err != nil {
 			return nil, err
 		}
-		ids = append(ids, id)
+		users = append(users, user)
 	}
 
 	if err := rows.Err(); err != nil {
 		return nil, err
 	}
 
-	return ids, nil
+	return users, nil
 }
 
 func (repo *Repository) GetUserByID(ctx context.Context, id uuid.UUID) (*domain.User, error) {

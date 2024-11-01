@@ -70,7 +70,7 @@ func (ctrl *Controller) SetupRoutes() {
 			r.Group(func(r chi.Router) {
 				r.Use(ctrl.checkAdmin)
 				r.Route("/users", func(r chi.Router) {
-					r.Get("/ids", ctrl.getAllUserID)
+					r.Get("/", ctrl.getAllUsers)
 					r.Get("/{ID}", ctrl.getUserByID)
 				})
 			})

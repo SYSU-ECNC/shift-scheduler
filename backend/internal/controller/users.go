@@ -9,14 +9,14 @@ import (
 	"github.com/google/uuid"
 )
 
-func (ctrl *Controller) getAllUserID(w http.ResponseWriter, r *http.Request) {
-	ids, err := ctrl.repo.GetAllUserID(r.Context())
+func (ctrl *Controller) getAllUsers(w http.ResponseWriter, r *http.Request) {
+	users, err := ctrl.repo.GetAllUsers(r.Context())
 	if err != nil {
 		ctrl.internalServerError(w, err)
 		return
 	}
 
-	ctrl.writeJSON(w, http.StatusOK, ids)
+	ctrl.writeJSON(w, http.StatusOK, users)
 }
 
 func (ctrl *Controller) getUserByID(w http.ResponseWriter, r *http.Request) {
