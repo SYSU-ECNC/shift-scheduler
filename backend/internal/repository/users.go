@@ -61,3 +61,52 @@ func (repo *Repository) UpdateUser(ctx context.Context, user *domain.User) error
 
 	return nil
 }
+
+func (repo *Repository) GetAllUserID(ctx context.Context) ([]string, error) {
+	query := `
+		SELECT id FROM users
+	`
+
+	ids := make([]string, 0)
+	rows, err := repo.db.QueryContext(ctx, query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var id string
+		if err := rows.Scan(&id); err != nil {
+			return nil, err
+		}
+		ids = append(ids, id)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return ids, nil
+}
+
+func (repo *Repository) CreateUser(ctx context.Context, user *domain.User) error {
+	query := `
+		INSERT INTO users (username, password_hash, full_name, role)
+		VALUES ($1, $2, $3, $4)
+		RETURNING id, created_at
+	`
+
+	if err := repo.db.QueryRowContext(ctx, query, user.Username, user.PasswordHash, user.FullName, user.Role).Scan(
+		&user.ID,
+		&user.CreatedAt,
+	); err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return ErrRecordNotFound
+		default:
+			return err
+		}
+	}
+
+	return nil
+}

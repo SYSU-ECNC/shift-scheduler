@@ -3,9 +3,7 @@ package controller
 import (
 	"context"
 	"errors"
-	"log/slog"
 	"net/http"
-	"time"
 
 	"github.com/SYSU-ECNC/shift-scheduler/backend/internal/domain"
 	"github.com/SYSU-ECNC/shift-scheduler/backend/internal/repository"
@@ -72,37 +70,19 @@ func (ctrl *Controller) getRequester(next http.Handler) http.Handler {
 	})
 }
 
-func (ctrl *Controller) corsMiddleware(next http.Handler) http.Handler {
+func (ctrl *Controller) checkAdmin(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if ctrl.cfg.Environment == "development" {
-			w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
+		requester, err := ctrl.getRequesterFromCtx(r.Context())
+		if err != nil {
+			ctrl.internalServerError(w, err)
+			return
 		}
 
-		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH, OPTIONS")
-		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
-		w.Header().Set("Access-Control-Allow-Credentials", "true")
-
-		if r.Method == http.MethodOptions {
-			w.WriteHeader(http.StatusNoContent)
+		if requester.Role != "黑心" {
+			ctrl.writeErrorJSON(w, http.StatusForbidden, errors.New("无权限"))
 			return
 		}
 
 		next.ServeHTTP(w, r)
-	})
-}
-
-func (ctrl *Controller) loggingMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		start := time.Now()
-
-		next.ServeHTTP(w, r)
-
-		duration := time.Since(start)
-
-		ctrl.logger.Info("HTTP request",
-			slog.String("method", r.Method),
-			slog.String("path", r.URL.Path),
-			slog.Duration("duration", duration),
-		)
 	})
 }

@@ -61,10 +61,17 @@ func (ctrl *Controller) SetupRoutes() {
 		})
 		r.Group(func(r chi.Router) {
 			r.Use(ctrl.getSubAndRoleFromJWT)
+			r.Use(ctrl.getRequester)
 			r.Route("/me", func(r chi.Router) {
-				r.Use(ctrl.getRequester)
 				r.Get("/", ctrl.getRequesterInfo)
 				r.Patch("/password", ctrl.changeRequesterPassword)
+			})
+
+			r.Group(func(r chi.Router) {
+				r.Use(ctrl.checkAdmin)
+				r.Route("/users", func(r chi.Router) {
+					r.Get("/ids", ctrl.getAllUserID)
+				})
 			})
 		})
 	})
