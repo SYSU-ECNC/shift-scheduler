@@ -25,6 +25,7 @@ import { toast } from "sonner";
 import { AxiosError } from "axios";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import { User } from "@/types/types";
+import { useEffect } from "react";
 
 interface AddUserDialogProps {
   open: boolean;
@@ -52,8 +53,14 @@ export default function AddUserDialog({
     formState: { errors },
     setError,
     setFocus,
+    reset,
   } = useForm<formDataType>({
     resolver: zodResolver(schema),
+    defaultValues: {
+      username: "",
+      fullName: "",
+      role: "普通助理",
+    },
   });
 
   const queryClient = useQueryClient();
@@ -77,6 +84,10 @@ export default function AddUserDialog({
     },
   });
 
+  useEffect(() => {
+    reset();
+  }, [open, reset]);
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
@@ -89,6 +100,7 @@ export default function AddUserDialog({
         <form
           className="flex flex-col gap-4"
           onSubmit={handleSubmit((data) => mutate(data))}
+          onReset={() => reset()}
         >
           <div className="grid grid-cols-5 items-center gap-y-2">
             <Label className="text-end pr-3">用户名</Label>
