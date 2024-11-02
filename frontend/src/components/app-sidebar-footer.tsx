@@ -1,5 +1,4 @@
-import { User } from "@/types/types";
-import { useQueryClient } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { ChevronsUpDown, KeyRound, LogOut } from "lucide-react";
 import { useState } from "react";
 import LogoutDialog from "./logout-dialog";
@@ -18,10 +17,13 @@ import {
   SidebarMenuItem,
 } from "./ui/sidebar";
 import UpdatePasswordDialog from "./update-password-dialog";
+import { getMe } from "@/lib/api";
 
 export default function AppSidebarFooter() {
-  const queryClient = useQueryClient();
-  const me: User | undefined = queryClient.getQueryData(["me"]);
+  const { data: me } = useSuspenseQuery({
+    queryKey: ["me"],
+    queryFn: getMe,
+  });
 
   const [isLogoutDialogOpen, setLogoutDialogOpen] = useState(false);
   const [isUpdatePasswordDialogOpen, setUpdatePasswordDialogOpen] =

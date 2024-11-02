@@ -30,3 +30,12 @@ export const updatePassword = (data: {
   oldPassword: string;
   newPassword: string;
 }) => api.patch("/api/v1/me/password", data);
+
+export const getAllUsers = () =>
+  api.get<User[]>("/api/v1/users").then((res) => res.data);
+
+export const createUser = (data: {
+  username: string;
+  fullName: string;
+  role: string;
+}) => api.post("/api/v1/users", data).then((res) => res.data);

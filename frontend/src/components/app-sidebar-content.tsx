@@ -1,4 +1,5 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useLocation } from "@tanstack/react-router";
+import { GitFork, Home, UserCog } from "lucide-react";
 import {
   SidebarContent,
   SidebarGroup,
@@ -8,13 +9,17 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "./ui/sidebar";
-import { GitFork, Home } from "lucide-react";
 
 const navMain = [
   {
     title: "主页",
     url: "/dashboard",
     icon: Home,
+  },
+  {
+    title: "用户管理",
+    url: "/dashboard/users",
+    icon: UserCog,
   },
 ];
 
@@ -27,6 +32,8 @@ const navSecondary = [
 ];
 
 export default function AppSidebarContent() {
+  const location = useLocation();
+
   return (
     <SidebarContent>
       <SidebarGroup>
@@ -35,18 +42,15 @@ export default function AppSidebarContent() {
           <SidebarMenu>
             {navMain.map((item) => (
               <SidebarMenuItem key={item.title}>
-                <Link to={item.url}>
-                  {({ isActive }) => {
-                    return (
-                      <SidebarMenuButton asChild isActive={isActive}>
-                        <div>
-                          <item.icon />
-                          <span>{item.title}</span>
-                        </div>
-                      </SidebarMenuButton>
-                    );
-                  }}
-                </Link>
+                <SidebarMenuButton
+                  asChild
+                  isActive={location.pathname === item.url}
+                >
+                  <Link to={item.url}>
+                    <item.icon />
+                    <span>{item.title}</span>
+                  </Link>
+                </SidebarMenuButton>
               </SidebarMenuItem>
             ))}
           </SidebarMenu>
