@@ -35,7 +35,7 @@ interface AddUserDialogProps {
 const schema = z.object({
   username: z.string().min(1, { message: "用户名不能为空" }),
   fullName: z.string().min(1, { message: "姓名不能为空" }),
-  role: z.enum(["普通助理", "资深助理", "黑心"], {
+  role: z.string().min(1, {
     message: "请选择用户的身份",
   }),
 });
@@ -59,7 +59,7 @@ export default function AddUserDialog({
     defaultValues: {
       username: "",
       fullName: "",
-      role: "普通助理",
+      role: "",
     },
   });
 
@@ -100,7 +100,6 @@ export default function AddUserDialog({
         <form
           className="flex flex-col gap-4"
           onSubmit={handleSubmit((data) => mutate(data))}
-          onReset={() => reset()}
         >
           <div className="grid grid-cols-5 items-center gap-y-2">
             <Label className="text-end pr-3">用户名</Label>
@@ -159,9 +158,6 @@ export default function AddUserDialog({
             )}
           </div>
           <DialogFooter>
-            <Button variant="outline" type="reset" disabled={isPending}>
-              重置表单
-            </Button>
             <Button disabled={isPending}>
               {isPending && (
                 <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
