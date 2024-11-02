@@ -7,6 +7,7 @@ import (
 
 	"github.com/SYSU-ECNC/shift-scheduler/backend/internal/domain"
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgconn"
 )
 
 func (repo *Repository) GetUserByUsername(ctx context.Context, username string) (*domain.User, error) {
@@ -129,12 +130,17 @@ func (repo *Repository) CreateUser(ctx context.Context, user *domain.User) error
 		&user.ID,
 		&user.CreatedAt,
 	); err != nil {
-		switch {
-		case errors.Is(err, sql.ErrNoRows):
-			return ErrRecordNotFound
-		default:
-			return err
+		var pgErr *pgconn.PgError
+		if errors.As(err, &pgErr) {
+			switch pgErr.Code {
+			case "23505":
+				return ErrUsernameConflict
+			default:
+				return err
+			}
 		}
+
+		return err
 	}
 
 	return nil

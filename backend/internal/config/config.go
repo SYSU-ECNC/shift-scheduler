@@ -1,20 +1,17 @@
 package config
 
 import (
-	"log/slog"
 	"os"
 )
 
 type Config struct {
-	logger *slog.Logger
-
 	DatabaseURL string
 	Environment string
 	JWTSecret   string
 }
 
-func NewConfig(logger *slog.Logger) *Config {
-	return &Config{logger: logger}
+func NewConfig() *Config {
+	return &Config{}
 }
 
 func (cfg *Config) LoadConfig() {
@@ -26,7 +23,6 @@ func (cfg *Config) LoadConfig() {
 func (cfg *Config) readStringEnv(key string, fallback string) string {
 	value, ok := os.LookupEnv(key)
 	if !ok {
-		cfg.logger.Warn("the environment variable is empty, use fallback instead", "key", key, "fallback", fallback)
 		return fallback
 	}
 	return value

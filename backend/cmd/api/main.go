@@ -16,10 +16,10 @@ import (
 )
 
 func main() {
-	logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
-
-	cfg := config.NewConfig(logger)
+	cfg := config.NewConfig()
 	cfg.LoadConfig()
+
+	logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
 
 	db, err := sql.Open("pgx", cfg.DatabaseURL)
 	if err != nil {

@@ -11,18 +11,25 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
+	"github.com/go-playground/validator/v10"
 )
 
 type Controller struct {
-	cfg    *config.Config
-	logger *slog.Logger
-	repo   *repository.Repository
+	cfg      *config.Config
+	logger   *slog.Logger
+	repo     *repository.Repository
+	validate *validator.Validate
 
 	Handler http.Handler
 }
 
 func NewController(cfg *config.Config, logger *slog.Logger, repo *repository.Repository) *Controller {
-	return &Controller{cfg: cfg, logger: logger, repo: repo}
+	return &Controller{
+		cfg:      cfg,
+		logger:   logger,
+		repo:     repo,
+		validate: validator.New(validator.WithRequiredStructEnabled()),
+	}
 }
 
 func (ctrl *Controller) SetupRoutes() {
@@ -71,6 +78,7 @@ func (ctrl *Controller) SetupRoutes() {
 				r.Use(ctrl.checkAdmin)
 				r.Route("/users", func(r chi.Router) {
 					r.Get("/", ctrl.getAllUsers)
+					r.Post("/", ctrl.createUser)
 					r.Get("/{ID}", ctrl.getUserByID)
 				})
 			})
