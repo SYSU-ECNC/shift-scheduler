@@ -13,6 +13,7 @@ var (
 	subCtxKey       ContextKey = "sub"
 	roleCtxKey      ContextKey = "role"
 	requesterCtxKey ContextKey = "requester"
+	userCtxKey      ContextKey = "user"
 )
 
 func (ctrl *Controller) getSubFromCtx(ctx context.Context) (string, error) {
@@ -41,4 +42,18 @@ func (ctrl *Controller) getRequesterFromCtx(ctx context.Context) (*domain.User, 
 	}
 
 	return requester, nil
+}
+
+func (ctrl *Controller) getUserFromCtx(ctx context.Context) (*domain.User, error) {
+	userCtx := ctx.Value(userCtxKey)
+	if userCtx == nil {
+		return nil, errors.New("cannot get userCtx")
+	}
+
+	user, ok := userCtx.(*domain.User)
+	if !ok {
+		return nil, errors.New("cannot convert user to *domain.User")
+	}
+
+	return user, nil
 }

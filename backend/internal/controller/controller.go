@@ -79,7 +79,12 @@ func (ctrl *Controller) SetupRoutes() {
 				r.Route("/users", func(r chi.Router) {
 					r.Get("/", ctrl.getAllUsers)
 					r.Post("/", ctrl.createUser)
-					r.Get("/{ID}", ctrl.getUserByID)
+
+					r.Group(func(r chi.Router) {
+						r.Use(ctrl.getUserMiddleware)
+						r.Get("/{ID}", ctrl.getUserByID)
+						r.Put("/{ID}", ctrl.updateUser)
+					})
 				})
 			})
 		})

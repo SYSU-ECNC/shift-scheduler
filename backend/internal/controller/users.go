@@ -6,8 +6,6 @@ import (
 
 	"github.com/SYSU-ECNC/shift-scheduler/backend/internal/domain"
 	"github.com/SYSU-ECNC/shift-scheduler/backend/internal/repository"
-	"github.com/go-chi/chi/v5"
-	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -22,23 +20,10 @@ func (ctrl *Controller) getAllUsers(w http.ResponseWriter, r *http.Request) {
 }
 
 func (ctrl *Controller) getUserByID(w http.ResponseWriter, r *http.Request) {
-	IDParam := chi.URLParam(r, "ID")
-
-	uuid, err := uuid.Parse(IDParam)
+	user, err := ctrl.getUserFromCtx(r.Context())
 	if err != nil {
-		ctrl.writeErrorJSON(w, http.StatusNotFound, errors.New("用户不存在"))
+		ctrl.internalServerError(w, err)
 		return
-	}
-
-	user, err := ctrl.repo.GetUserByID(r.Context(), uuid)
-	if err != nil {
-		switch {
-		case errors.Is(err, repository.ErrRecordNotFound):
-			ctrl.writeErrorJSON(w, http.StatusNotFound, errors.New("用户不存在"))
-		default:
-			ctrl.internalServerError(w, err)
-			return
-		}
 	}
 
 	ctrl.writeJSON(w, http.StatusOK, user)
@@ -100,4 +85,47 @@ func (ctrl *Controller) createUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	ctrl.writeJSON(w, http.StatusCreated, user)
+}
+
+func (ctrl *Controller) updateUser(w http.ResponseWriter, r *http.Request) {
+	user, err := ctrl.getUserFromCtx(r.Context())
+	if err != nil {
+		ctrl.writeErrorJSON(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	type request struct {
+		Role              *string `json:"role" validate:"oneof=普通助理 资深助理 黑心"`
+		NeedResetPassword *bool   `json:"needResetPassword"`
+	}
+
+	req := new(request)
+	if err := ctrl.readJSON(r, req); err != nil {
+		ctrl.writeErrorJSON(w, http.StatusBadRequest, err)
+		return
+	}
+
+	if err := ctrl.validate.Struct(req); err != nil {
+		ctrl.writeErrorJSON(w, http.StatusBadRequest, err)
+		return
+	}
+
+	if req.Role != nil {
+		user.Role = *req.Role
+	}
+	if req.NeedResetPassword != nil && *req.NeedResetPassword {
+		passwordHashBytes, err := bcrypt.GenerateFromPassword([]byte("ecncpassword"), bcrypt.DefaultCost)
+		if err != nil {
+			ctrl.writeErrorJSON(w, http.StatusInternalServerError, err)
+			return
+		}
+		user.PasswordHash = string(passwordHashBytes)
+	}
+
+	if err := ctrl.repo.UpdateUser(r.Context(), user); err != nil {
+		ctrl.writeErrorJSON(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	ctrl.writeJSON(w, http.StatusOK, user)
 }

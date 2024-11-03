@@ -7,7 +7,9 @@ import (
 
 	"github.com/SYSU-ECNC/shift-scheduler/backend/internal/domain"
 	"github.com/SYSU-ECNC/shift-scheduler/backend/internal/repository"
+	"github.com/go-chi/chi/v5"
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/google/uuid"
 )
 
 func (ctrl *Controller) getSubAndRoleFromJWT(next http.Handler) http.Handler {
@@ -84,5 +86,31 @@ func (ctrl *Controller) checkAdmin(next http.Handler) http.Handler {
 		}
 
 		next.ServeHTTP(w, r)
+	})
+}
+
+func (ctrl *Controller) getUserMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		IDParam := chi.URLParam(r, "ID")
+
+		uuid, err := uuid.Parse(IDParam)
+		if err != nil {
+			ctrl.writeErrorJSON(w, http.StatusNotFound, errors.New("用户不存在"))
+			return
+		}
+
+		user, err := ctrl.repo.GetUserByID(r.Context(), uuid)
+		if err != nil {
+			switch {
+			case errors.Is(err, repository.ErrRecordNotFound):
+				ctrl.writeErrorJSON(w, http.StatusNotFound, errors.New("用户不存在"))
+			default:
+				ctrl.internalServerError(w, err)
+				return
+			}
+		}
+
+		ctx := context.WithValue(r.Context(), userCtxKey, user)
+		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
