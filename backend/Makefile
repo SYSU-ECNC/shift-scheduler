@@ -10,11 +10,11 @@ new_migration:
 
 .PHONY: migrate_up
 migrate_up:
-	@migrate -database $(DATABASE_URL) -path migrations up $(filter-out, $@,$(MAKECMDGOALS))
+	@migrate -database $(DATABASE_URL) -path migrations up $(filter-out $@,$(MAKECMDGOALS))
 
 .PHONY: migrate_down
 migrate_down:
-	@migrate -database $(DATABASE_URL) -path migrations down $(filter-out, $@,$(MAKECMDGOALS))
+	@migrate -database $(DATABASE_URL) -path migrations down $(filter-out $@,$(MAKECMDGOALS))
 
 %:
 	@:
