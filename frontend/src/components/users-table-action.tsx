@@ -13,11 +13,13 @@ import { MoreHorizontal } from "lucide-react";
 import { useState } from "react";
 import UpdateRoleDialog from "./update-role-dialog";
 import ResetPasswordDialog from "./reset-password-dialog";
+import DeleteUserDialog from "./delete-user-dialog";
 
 export default function UsersTableAction({ row }: { row: Row<User> }) {
   const [isUpdateRoleDialogOpen, setUpdateRoleDialogOpen] = useState(false);
   const [isResetPasswordDialogOpen, setResetPasswordDialogOpen] =
     useState(false);
+  const [isDeleteUserDialogOpen, setDeleteUserDialogOpen] = useState(false);
 
   return (
     <>
@@ -36,7 +38,10 @@ export default function UsersTableAction({ row }: { row: Row<User> }) {
             重置密码
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem className="text-destructive">
+          <DropdownMenuItem
+            className="text-destructive"
+            onClick={() => setDeleteUserDialogOpen(true)}
+          >
             删除用户
           </DropdownMenuItem>
         </DropdownMenuContent>
@@ -49,6 +54,11 @@ export default function UsersTableAction({ row }: { row: Row<User> }) {
       <ResetPasswordDialog
         open={isResetPasswordDialogOpen}
         onOpenChange={setResetPasswordDialogOpen}
+        userID={row.getValue("id")}
+      />
+      <DeleteUserDialog
+        open={isDeleteUserDialogOpen}
+        onOpenChange={setDeleteUserDialogOpen}
         userID={row.getValue("id")}
       />
     </>

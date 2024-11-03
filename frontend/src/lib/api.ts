@@ -51,3 +51,6 @@ export const updateUser = (data: {
       needResetPassword: data.needResetPassword,
     })
     .then((res) => res.data);
+
+export const deleteUser = (userID: string) =>
+  api.delete(`/api/v1/users/${userID}`);
