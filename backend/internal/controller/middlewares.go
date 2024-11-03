@@ -106,8 +106,8 @@ func (ctrl *Controller) getUserMiddleware(next http.Handler) http.Handler {
 				ctrl.writeErrorJSON(w, http.StatusNotFound, errors.New("用户不存在"))
 			default:
 				ctrl.internalServerError(w, err)
-				return
 			}
+			return
 		}
 
 		ctx := context.WithValue(r.Context(), userCtxKey, user)
