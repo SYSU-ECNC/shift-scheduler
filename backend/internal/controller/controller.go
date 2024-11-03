@@ -87,6 +87,10 @@ func (ctrl *Controller) SetupRoutes() {
 						r.Delete("/{ID}", ctrl.deleteUser)
 					})
 				})
+
+				r.Route("/shifts", func(r chi.Router) {
+					r.Post("/", ctrl.createShift)
+				})
 			})
 		})
 	})
