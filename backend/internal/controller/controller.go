@@ -84,6 +84,7 @@ func (ctrl *Controller) SetupRoutes() {
 						r.Use(ctrl.getUserMiddleware)
 						r.Get("/{ID}", ctrl.getUserByID)
 						r.Put("/{ID}", ctrl.updateUser)
+						r.Delete("/{ID}", ctrl.deleteUser)
 					})
 				})
 			})

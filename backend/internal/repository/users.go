@@ -146,3 +146,21 @@ func (repo *Repository) CreateUser(ctx context.Context, user *domain.User) error
 
 	return nil
 }
+
+func (repo *Repository) DeleteUser(ctx context.Context, user *domain.User) error {
+	query := `DELETE FROM users WHERE id = $1`
+
+	res, err := repo.db.ExecContext(ctx, query, user.ID)
+	if err != nil {
+		return err
+	}
+	row, err := res.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if row == 0 {
+		return ErrRecordNotFound
+	}
+
+	return nil
+}

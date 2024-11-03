@@ -129,3 +129,18 @@ func (ctrl *Controller) updateUser(w http.ResponseWriter, r *http.Request) {
 
 	ctrl.writeJSON(w, http.StatusOK, user)
 }
+
+func (ctrl *Controller) deleteUser(w http.ResponseWriter, r *http.Request) {
+	user, err := ctrl.getUserFromCtx(r.Context())
+	if err != nil {
+		ctrl.writeErrorJSON(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	if err := ctrl.repo.DeleteUser(r.Context(), user); err != nil {
+		ctrl.writeErrorJSON(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	ctrl.writeJSON(w, http.StatusNoContent, nil)
+}
