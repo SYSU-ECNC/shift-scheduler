@@ -95,7 +95,7 @@ func (ctrl *Controller) updateUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	type request struct {
-		Role              *string `json:"role" validate:"oneof=普通助理 资深助理 黑心"`
+		Role              *string `json:"role" validate:"omitempty,oneof=普通助理 资深助理 黑心"`
 		NeedResetPassword *bool   `json:"needResetPassword"`
 	}
 
