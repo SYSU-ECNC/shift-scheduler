@@ -14,6 +14,7 @@ import {
 } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 import { useState } from "react";
+import AddUserDialog from "./add-user-dialog";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import {
@@ -25,7 +26,6 @@ import {
   TableRow,
 } from "./ui/table";
 import UsersTableAction from "./users-table-action";
-import AddUserDialog from "./add-user-dialog";
 
 const columns: ColumnDef<User>[] = [
   {
@@ -62,6 +62,11 @@ const columns: ColumnDef<User>[] = [
     id: "action",
     cell: ({ row }) => <UsersTableAction row={row} />,
   },
+  {
+    accessorKey: "id",
+    header: "ID",
+    enableHiding: true,
+  },
 ];
 
 export default function UsersTable() {
@@ -86,6 +91,11 @@ export default function UsersTable() {
     state: {
       sorting,
       columnFilters,
+    },
+    initialState: {
+      columnVisibility: {
+        id: false,
+      },
     },
   });
 

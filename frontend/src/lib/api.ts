@@ -39,3 +39,15 @@ export const createUser = (data: {
   fullName: string;
   role: string;
 }) => api.post("/api/v1/users", data).then((res) => res.data);
+
+export const updateUser = (data: {
+  role?: string;
+  needResetPassword?: boolean;
+  userID: string;
+}) =>
+  api
+    .put(`/api/v1/users/${data.userID}`, {
+      role: data.role,
+      needResetPassword: data.needResetPassword,
+    })
+    .then((res) => res.data);
