@@ -1,14 +1,14 @@
 CREATE TABLE
-    IF NOT EXISTS shift_templates_metas (
+    IF NOT EXISTS shifts_templates_metas (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid (),
         name TEXT NOT NULL,
         created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
     );
 
 CREATE TABLE
-    IF NOT EXISTS shift_templates_entries (
+    IF NOT EXISTS shifts_templates_entries (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid (),
-        shift_template_id UUID NOT NULL REFERENCES shift_templates_metas (id),
+        shift_template_id UUID NOT NULL REFERENCES shifts_templates_metas (id),
         day_of_week INT NOT NULL,
         start_time TIMETZ NOT NULL,
         end_time TIMETZ NOT NULL,
@@ -16,10 +16,10 @@ CREATE TABLE
         created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
     );
 
-INSERT INTO shift_templates_metas (id, name)
+INSERT INTO shifts_templates_metas (id, name)
 VALUES ('6f13d136-19f7-436c-a473-c01371ade914', '默认模板');
 
-INSERT INTO shift_templates_entries (shift_template_id, day_of_week, start_time, end_time, assistants)
+INSERT INTO shifts_templates_entries (shift_template_id, day_of_week, start_time, end_time, assistants)
 VALUES 
     ('6f13d136-19f7-436c-a473-c01371ade914', 1, '09:00:00+00:00', '10:00:00+00:00', 4),  -- 周一
     ('6f13d136-19f7-436c-a473-c01371ade914', 1, '10:00:00+00:00', '12:00:00+00:00', 4),  -- 周一
