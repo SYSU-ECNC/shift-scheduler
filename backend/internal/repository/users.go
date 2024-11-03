@@ -97,13 +97,14 @@ func (repo *Repository) GetUserByID(ctx context.Context, id uuid.UUID) (*domain.
 	user.ID = id
 
 	query := `
-		SELECT username, full_name, role, created_at
+		SELECT username, password_hash, full_name, role, created_at
 		FROM users
 		WHERE id = $1
 	`
 
 	if err := repo.db.QueryRowContext(ctx, query, user.ID).Scan(
 		&user.Username,
+		&user.PasswordHash,
 		&user.FullName,
 		&user.Role,
 		&user.CreatedAt,
