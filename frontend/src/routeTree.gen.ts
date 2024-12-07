@@ -20,6 +20,7 @@ import { Route as UnauthenticatedAuthLoginImport } from './routes/_unauthenticat
 import { Route as AuthenticatedDashboardLayoutImport } from './routes/_authenticated/dashboard/_layout'
 import { Route as AuthenticatedDashboardLayoutIndexImport } from './routes/_authenticated/dashboard/_layout/index'
 import { Route as AuthenticatedDashboardLayoutUsersImport } from './routes/_authenticated/dashboard/_layout/users'
+import { Route as AuthenticatedDashboardLayoutSubmitFreeTimeImport } from './routes/_authenticated/dashboard/_layout/submit-free-time'
 
 // Create Virtual Routes
 
@@ -77,6 +78,13 @@ const AuthenticatedDashboardLayoutUsersRoute =
     getParentRoute: () => AuthenticatedDashboardLayoutRoute,
   } as any)
 
+const AuthenticatedDashboardLayoutSubmitFreeTimeRoute =
+  AuthenticatedDashboardLayoutSubmitFreeTimeImport.update({
+    id: '/submit-free-time',
+    path: '/submit-free-time',
+    getParentRoute: () => AuthenticatedDashboardLayoutRoute,
+  } as any)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -123,6 +131,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UnauthenticatedAuthLoginImport
       parentRoute: typeof UnauthenticatedImport
     }
+    '/_authenticated/dashboard/_layout/submit-free-time': {
+      id: '/_authenticated/dashboard/_layout/submit-free-time'
+      path: '/submit-free-time'
+      fullPath: '/dashboard/submit-free-time'
+      preLoaderRoute: typeof AuthenticatedDashboardLayoutSubmitFreeTimeImport
+      parentRoute: typeof AuthenticatedDashboardLayoutImport
+    }
     '/_authenticated/dashboard/_layout/users': {
       id: '/_authenticated/dashboard/_layout/users'
       path: '/users'
@@ -143,12 +158,15 @@ declare module '@tanstack/react-router' {
 // Create and export the route tree
 
 interface AuthenticatedDashboardLayoutRouteChildren {
+  AuthenticatedDashboardLayoutSubmitFreeTimeRoute: typeof AuthenticatedDashboardLayoutSubmitFreeTimeRoute
   AuthenticatedDashboardLayoutUsersRoute: typeof AuthenticatedDashboardLayoutUsersRoute
   AuthenticatedDashboardLayoutIndexRoute: typeof AuthenticatedDashboardLayoutIndexRoute
 }
 
 const AuthenticatedDashboardLayoutRouteChildren: AuthenticatedDashboardLayoutRouteChildren =
   {
+    AuthenticatedDashboardLayoutSubmitFreeTimeRoute:
+      AuthenticatedDashboardLayoutSubmitFreeTimeRoute,
     AuthenticatedDashboardLayoutUsersRoute:
       AuthenticatedDashboardLayoutUsersRoute,
     AuthenticatedDashboardLayoutIndexRoute:
@@ -204,6 +222,7 @@ export interface FileRoutesByFullPath {
   '': typeof UnauthenticatedRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardLayoutRouteWithChildren
   '/auth/login': typeof UnauthenticatedAuthLoginRoute
+  '/dashboard/submit-free-time': typeof AuthenticatedDashboardLayoutSubmitFreeTimeRoute
   '/dashboard/users': typeof AuthenticatedDashboardLayoutUsersRoute
   '/dashboard/': typeof AuthenticatedDashboardLayoutIndexRoute
 }
@@ -213,6 +232,7 @@ export interface FileRoutesByTo {
   '': typeof UnauthenticatedRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardLayoutIndexRoute
   '/auth/login': typeof UnauthenticatedAuthLoginRoute
+  '/dashboard/submit-free-time': typeof AuthenticatedDashboardLayoutSubmitFreeTimeRoute
   '/dashboard/users': typeof AuthenticatedDashboardLayoutUsersRoute
 }
 
@@ -224,6 +244,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/_authenticated/dashboard/_layout': typeof AuthenticatedDashboardLayoutRouteWithChildren
   '/_unauthenticated/auth/login': typeof UnauthenticatedAuthLoginRoute
+  '/_authenticated/dashboard/_layout/submit-free-time': typeof AuthenticatedDashboardLayoutSubmitFreeTimeRoute
   '/_authenticated/dashboard/_layout/users': typeof AuthenticatedDashboardLayoutUsersRoute
   '/_authenticated/dashboard/_layout/': typeof AuthenticatedDashboardLayoutIndexRoute
 }
@@ -235,10 +256,17 @@ export interface FileRouteTypes {
     | ''
     | '/dashboard'
     | '/auth/login'
+    | '/dashboard/submit-free-time'
     | '/dashboard/users'
     | '/dashboard/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '' | '/dashboard' | '/auth/login' | '/dashboard/users'
+  to:
+    | '/'
+    | ''
+    | '/dashboard'
+    | '/auth/login'
+    | '/dashboard/submit-free-time'
+    | '/dashboard/users'
   id:
     | '__root__'
     | '/'
@@ -247,6 +275,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard'
     | '/_authenticated/dashboard/_layout'
     | '/_unauthenticated/auth/login'
+    | '/_authenticated/dashboard/_layout/submit-free-time'
     | '/_authenticated/dashboard/_layout/users'
     | '/_authenticated/dashboard/_layout/'
   fileRoutesById: FileRoutesById
@@ -307,6 +336,7 @@ export const routeTree = rootRoute
       "filePath": "_authenticated/dashboard/_layout.tsx",
       "parent": "/_authenticated/dashboard",
       "children": [
+        "/_authenticated/dashboard/_layout/submit-free-time",
         "/_authenticated/dashboard/_layout/users",
         "/_authenticated/dashboard/_layout/"
       ]
@@ -314,6 +344,10 @@ export const routeTree = rootRoute
     "/_unauthenticated/auth/login": {
       "filePath": "_unauthenticated/auth/login.tsx",
       "parent": "/_unauthenticated"
+    },
+    "/_authenticated/dashboard/_layout/submit-free-time": {
+      "filePath": "_authenticated/dashboard/_layout/submit-free-time.tsx",
+      "parent": "/_authenticated/dashboard/_layout"
     },
     "/_authenticated/dashboard/_layout/users": {
       "filePath": "_authenticated/dashboard/_layout/users.tsx",
